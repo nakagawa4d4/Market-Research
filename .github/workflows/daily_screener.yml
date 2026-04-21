@@ -1,0 +1,128 @@
+name: 🇯🇵 日本株 毎日注目銘柄スクリーニング
+
+on:
+  schedule:
+    # JST 08:00 = UTC 23:00 (前日)
+    # 月〜金 (0=日曜 ... 4=木曜 → UTC換算で前日の0-4)
+    - cron: '0 23 * * 0-4'
+  # 手動でも実行できるようにする
+  workflow_dispatch:
+    inputs:
+      target_date:
+        description: '対象日 (YYYY-MM-DD)。省略時は前営業日。'
+        required: false
+        default: ''
+      top_n:
+        description: 'レポート掲載銘柄数'
+        required: false
+        default: '50'
+
+# GitHub Pages へのデプロイ権限
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  screen:
+    name: スクリーニング & レポート生成
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # ── 1. チェックアウト ───────────────────────────
+      - name: 📥 リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      # ── 2. Python 環境セットアップ ─────────────────
+      - name: 🐍 Python 3.11 セットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: daily_screener/requirements.txt
+
+      # ── 3. 依存パッケージインストール ──────────────
+      - name: 📦 依存パッケージをインストール
+        run: |
+          pip install --upgrade pip
+          pip install -r daily_screener/requirements.txt
+
+      # ── 4. スクリーニング実行 ───────────────────────
+      - name: 🔍 スクリーニング & レポート生成
+        env:
+          JQUANTS_API_KEY: ${{ secrets.JQUANTS_API_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          LINE_NOTIFY_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          NOTIFY_TO_EMAIL: ${{ secrets.NOTIFY_TO_EMAIL }}
+        run: |
+          cd daily_screener
+          python run_daily.py \
+            ${{ github.event.inputs.target_date != '' && format('--date {0}', github.event.inputs.target_date) || '' }} \
+            --top-n ${{ github.event.inputs.top_n || '50' }} \
+            --report-url "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/report_$(date +%Y-%m-%d).html"
+
+      # ── 5. 成果物アップロード (GitHub Actions Artifact) ─
+      - name: 📤 レポートをアーティファクトとして保存
+        uses: actions/upload-artifact@v4
+        with:
+          name: screening-report-${{ github.run_number }}
+          path: |
+            daily_screener/reports/
+            daily_screener/data/
+            daily_screener/logs/
+          if-no-files-found: warn
+          retention-days: 90
+
+      # ── 6. GitHub Pages デプロイ (レポート公開) ────────
+      - name: 📄 GitHub Pages 用に index.html を生成
+        run: |
+          mkdir -p docs/reports
+          cp -r daily_screener/reports/* docs/reports/ 2>/dev/null || true
+
+          # 最新レポートへのリダイレクト index.html
+          LATEST_REPORT=$(ls docs/reports/report_*.html 2>/dev/null | sort -r | head -1 | xargs basename 2>/dev/null || echo "")
+          if [ -n "$LATEST_REPORT" ]; then
+            cat > docs/index.html <<EOF
+          <!DOCTYPE html>
+          <html lang="ja">
+          <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="refresh" content="0; url=reports/${LATEST_REPORT}">
+            <title>日本株 注目銘柄レポート</title>
+          </head>
+          <body>
+            <p><a href="reports/${LATEST_REPORT}">最新レポートへ移動</a></p>
+          </body>
+          </html>
+          EOF
+            echo "✅ index.html → reports/${LATEST_REPORT}"
+          fi
+
+      - name: 🌐 GitHub Pages へデプロイ
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          keep_files: true  # 過去のレポートを保持
+
+      # ── 7. 結果サマリーを GitHub Actions に表示 ───
+      - name: 📊 実行サマリーを表示
+        if: always()
+        run: |
+          echo "### 🇯🇵 日本株スクリーニング実行完了" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| 項目 | 値 |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| 実行日時 | $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M JST') |" >> $GITHUB_STEP_SUMMARY
+          echo "| レポート数 | $(ls daily_screener/reports/*.html 2>/dev/null | wc -l) 件 |" >> $GITHUB_STEP_SUMMARY
+          if [ -f daily_screener/logs/run_$(date +%Y%m%d).log ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "#### ログ (末尾20行)" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            tail -20 daily_screener/logs/run_$(date +%Y%m%d).log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi

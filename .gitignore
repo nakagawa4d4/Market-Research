@@ -1,0 +1,32 @@
+# Environment variables (API keys)
+.env
+market_summary/.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+venv/
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
+
+# Data cache
+market_summary/data/
+daily_screener/data/
+daily_screener/logs/

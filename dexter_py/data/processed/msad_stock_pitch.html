@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MS&AD インシュアランスグループ — ストックピッチ 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #0a0e1a;
+  --bg2: #0f1525;
+  --bg3: #151e35;
+  --card: #1a2540;
+  --card2: #1e2b47;
+  --border: rgba(100,140,255,0.15);
+  --accent: #4f7cff;
+  --accent2: #7c3aed;
+  --accent3: #06b6d4;
+  --green: #10b981;
+  --red: #ef4444;
+  --yellow: #f59e0b;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --gold: #fbbf24;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Noto Sans JP',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ── Navigation ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,26,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;}
+.nav-brand{font-weight:800;font-size:1.1rem;background:linear-gradient(135deg,#4f7cff,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-links{display:flex;gap:1.5rem;}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:.85rem;font-weight:500;transition:.2s;padding:.4rem .8rem;border-radius:6px;}
+.nav-links a:hover{color:var(--text);background:var(--card);}
+
+/* ── Hero ── */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:6rem 2rem 4rem;text-align:center;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(79,124,255,.12) 0%,transparent 70%),var(--bg);}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(79,124,255,.15);border:1px solid rgba(79,124,255,.35);border-radius:50px;padding:.4rem 1.2rem;font-size:.8rem;color:#93c5fd;margin-bottom:2rem;font-weight:600;letter-spacing:.05em;}
+.hero h1{font-size:clamp(2.4rem,6vw,4.5rem);font-weight:900;line-height:1.1;margin-bottom:1rem;}
+.hero h1 span{background:linear-gradient(135deg,#4f7cff 0%,#7c3aed 50%,#06b6d4 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:1.15rem;color:var(--text2);max-width:680px;margin:0 auto 1.5rem;}
+.hero-meta{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin:2.5rem 0;}
+.hero-tag{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.5rem 1.2rem;font-size:.85rem;color:var(--text2);}
+.hero-tag strong{color:var(--text);display:block;font-size:1.05rem;font-weight:700;}
+.verdict-box{display:inline-block;margin-top:2rem;background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(16,185,129,.06));border:2px solid rgba(16,185,129,.5);border-radius:16px;padding:1.2rem 3rem;}
+.verdict-box .label{font-size:.8rem;color:var(--text3);letter-spacing:.15em;font-weight:600;margin-bottom:.2rem;}
+.verdict-box .value{font-size:2rem;font-weight:900;color:var(--green);}
+
+/* ── Sections ── */
+section{padding:5rem 2rem;max-width:1280px;margin:0 auto;}
+.section-tag{font-size:.75rem;font-weight:700;letter-spacing:.2em;color:var(--accent);text-transform:uppercase;margin-bottom:.8rem;}
+.section-title{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;margin-bottom:.5rem;}
+.section-sub{color:var(--text2);margin-bottom:3rem;max-width:640px;}
+
+/* ── Cards ── */
+.cards-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:2rem;}
+.cards-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;margin-top:2rem;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem;transition:.3s;}
+.card:hover{border-color:rgba(79,124,255,.4);transform:translateY(-3px);box-shadow:0 12px 40px rgba(79,124,255,.1);}
+.card-icon{font-size:1.8rem;margin-bottom:1rem;}
+.card h3{font-size:1rem;font-weight:700;margin-bottom:.5rem;}
+.card p{font-size:.875rem;color:var(--text2);line-height:1.7;}
+
+/* ── KPI metrics ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem;text-align:center;position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi.green::before{background:linear-gradient(90deg,#10b981,#059669);}
+.kpi.blue::before{background:linear-gradient(90deg,#4f7cff,#7c3aed);}
+.kpi.cyan::before{background:linear-gradient(90deg,#06b6d4,#0891b2);}
+.kpi.gold::before{background:linear-gradient(90deg,#fbbf24,#d97706);}
+.kpi.red::before{background:linear-gradient(90deg,#ef4444,#dc2626);}
+.kpi .label{font-size:.75rem;color:var(--text3);font-weight:600;margin-bottom:.4rem;letter-spacing:.05em;}
+.kpi .num{font-size:1.9rem;font-weight:800;line-height:1;}
+.kpi .num.green{color:var(--green);}
+.kpi .num.red{color:var(--red);}
+.kpi .num.gold{color:var(--gold);}
+.kpi .num.blue{color:var(--accent);}
+.kpi .num.cyan{color:var(--accent3);}
+.kpi .sub{font-size:.72rem;color:var(--text3);margin-top:.3rem;}
+.kpi .change{font-size:.78rem;margin-top:.4rem;font-weight:600;}
+.change.up{color:var(--green);}
+.change.down{color:var(--red);}
+
+/* ── Chart containers ── */
+.chart-wrap{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem;}
+.chart-title{font-weight:700;margin-bottom:1.2rem;font-size:.95rem;}
+.chart-box{position:relative;height:280px;}
+.charts-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:1.5rem;}
+
+/* ── Timeline ── */
+.timeline{position:relative;padding-left:2rem;}
+.timeline::before{content:'';position:absolute;left:.5rem;top:.5rem;bottom:.5rem;width:2px;background:linear-gradient(180deg,var(--accent),var(--accent2));}
+.timeline-item{position:relative;margin-bottom:2rem;}
+.timeline-item::before{content:'';position:absolute;left:-1.65rem;top:.45rem;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);box-shadow:0 0 10px rgba(79,124,255,.6);}
+.timeline-item .year{font-size:.75rem;font-weight:700;color:var(--accent);margin-bottom:.2rem;}
+.timeline-item h4{font-weight:700;font-size:.95rem;margin-bottom:.2rem;}
+.timeline-item p{font-size:.85rem;color:var(--text2);}
+
+/* ── Risk table ── */
+table{width:100%;border-collapse:collapse;margin-top:1.5rem;}
+th{background:var(--bg3);padding:.9rem 1rem;text-align:left;font-size:.8rem;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;}
+td{padding:.85rem 1rem;border-bottom:1px solid rgba(255,255,255,.05);font-size:.875rem;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(79,124,255,.04);}
+.badge{display:inline-block;padding:.2rem .7rem;border-radius:50px;font-size:.72rem;font-weight:700;}
+.badge.high{background:rgba(239,68,68,.2);color:#fca5a5;}
+.badge.mid{background:rgba(245,158,11,.18);color:#fcd34d;}
+.badge.low{background:rgba(16,185,129,.18);color:#6ee7b7;}
+
+/* ── Valuation ── */
+.val-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.val-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem;}
+.val-card h3{font-weight:700;margin-bottom:1rem;font-size:.95rem;color:var(--text2);}
+.price-target{text-align:center;background:linear-gradient(135deg,rgba(79,124,255,.12),rgba(124,58,237,.08));border:1px solid rgba(79,124,255,.3);border-radius:16px;padding:2rem;}
+.price-target .label{font-size:.8rem;color:var(--text3);margin-bottom:.5rem;font-weight:600;}
+.price-target .value{font-size:3rem;font-weight:900;color:var(--accent);}
+.price-target .upside{font-weight:700;color:var(--green);font-size:1.1rem;margin-top:.4rem;}
+
+/* ── Bull/Bear/Base ── */
+.scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+.scenario{border-radius:14px;padding:1.6rem;border:1px solid;}
+.scenario.bear{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.25);}
+.scenario.base{background:rgba(79,124,255,.07);border-color:rgba(79,124,255,.3);}
+.scenario.bull{background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.3);}
+.scenario .tag{font-size:.72rem;font-weight:800;letter-spacing:.15em;margin-bottom:.6rem;text-transform:uppercase;}
+.scenario.bear .tag{color:#fca5a5;}
+.scenario.base .tag{color:#93c5fd;}
+.scenario.bull .tag{color:#6ee7b7;}
+.scenario .price{font-size:2rem;font-weight:900;margin:.3rem 0;}
+.scenario.bear .price{color:var(--red);}
+.scenario.base .price{color:var(--accent);}
+.scenario.bull .price{color:var(--green);}
+.scenario ul{font-size:.8rem;color:var(--text2);list-style:none;padding:0;}
+.scenario ul li::before{content:'• ';color:var(--text3);}
+
+/* ── ESG ── */
+.esg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;}
+.esg-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;}
+.esg-card .hd{display:flex;align-items:center;gap:.7rem;margin-bottom:1rem;}
+.esg-card .ico{font-size:1.5rem;}
+.esg-card .ttl{font-weight:700;font-size:.95rem;}
+.progress-bar{background:rgba(255,255,255,.08);border-radius:50px;height:8px;margin:.5rem 0;}
+.progress-fill{height:8px;border-radius:50px;}
+
+/* ── Footer ── */
+footer{text-align:center;padding:3rem 2rem;color:var(--text3);font-size:.82rem;border-top:1px solid var(--border);}
+footer a{color:var(--accent);text-decoration:none;}
+
+/* ── Separator ── */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0 2rem;}
+
+.highlight{color:var(--gold);font-weight:700;}
+.tag-pill{display:inline-block;background:rgba(79,124,255,.14);border:1px solid rgba(79,124,255,.25);color:#93c5fd;border-radius:50px;font-size:.72rem;font-weight:700;padding:.25rem .9rem;margin:.2rem;}
+
+@media(max-width:768px){
+  .val-grid,.scenario-grid{grid-template-columns:1fr;}
+  .charts-2{grid-template-columns:1fr;}
+  .nav-links{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-brand">MS&AD 8725.T — Stock Pitch</div>
+  <div class="nav-links">
+    <a href="#thesis">投資仮説</a>
+    <a href="#financials">財務</a>
+    <a href="#segments">セグメント</a>
+    <a href="#valuation">バリュエーション</a>
+    <a href="#risks">リスク</a>
+    <a href="#esg">ESG</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div>
+    <div class="hero-badge">📋 有価証券報告書 第17期（FY2025/3）/ EDINET E03854</div>
+    <h1>MS&AD<br><span>インシュアランスグループ</span></h1>
+    <p class="hero-sub">国内最大級の損害保険グループ — 政策株式売却・海外拡大・資本効率改革が重なり、過去最高益を記録</p>
+    <div class="hero-meta">
+      <div class="hero-tag">ティッカー<strong>8725.T</strong></div>
+      <div class="hero-tag">セクター<strong>損保・金融</strong></div>
+      <div class="hero-tag">時価総額<strong>約4.6兆円</strong></div>
+      <div class="hero-tag">報告基準<strong>日本GAAP</strong></div>
+      <div class="hero-tag">決算期<strong>2025年3月31日</strong></div>
+    </div>
+    <div class="verdict-box">
+      <div class="label">投資判断</div>
+      <div class="value">BUY — 強気</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ① 投資仮説 -->
+<section id="thesis">
+  <div class="section-tag">Investment Thesis</div>
+  <h2 class="section-title">3つの投資仮説</h2>
+  <p class="section-sub">構造的変革・資本効率向上・株主還元強化という3つのカタリストが同時進行している</p>
+  <div class="cards-3">
+    <div class="card">
+      <div class="card-icon">🏦</div>
+      <h3>① 政策株式ゼロへの道</h3>
+      <p>2030年3月末までに上場政策株式を<span class="highlight">ゼロ</span>にする方針。FY2025/3は売却益が大幅増加しグループ修正利益を押し上げ。解放資本は配当・自社株買いに振り向けられる。</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌏</div>
+      <h3>② 海外事業の黒字化・拡大</h3>
+      <p>MS Amlin（ロイズ・再保険）の安定的拡大、米国MGA市場のMS Transverse、アジア地域の拡大が継続。海外収益が国内低成長を<span class="highlight">補完する二重エンジン</span>を構築。</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📈</div>
+      <h3>③ 記録的資本効率・配当成長</h3>
+      <p>グループ修正ROE <span class="highlight">15.7%</span>（計画比+1.4pt）は保険セクタートップ水準。修正利益の50%を株主還元。年間DPS 145円、追加還元も継続。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ② KPI -->
+<section id="kpis" style="padding-top:0;">
+  <div class="section-tag">Key Performance Indicators</div>
+  <h2 class="section-title">FY2025/3 主要KPI</h2>
+  <p class="section-sub">過去最高益更新 — グループ修正利益 7,317億円（計画比+9.2%）</p>
+  <div class="kpi-grid">
+    <div class="kpi green">
+      <div class="label">グループ修正利益</div>
+      <div class="num green">7,317億円</div>
+      <div class="sub">過去最高益</div>
+      <div class="change up">▲ 計画比 +9.2%</div>
+    </div>
+    <div class="kpi green">
+      <div class="label">親会社帰属当期純利益</div>
+      <div class="num green">6,916億円</div>
+      <div class="sub">前年比 +3,223億円</div>
+      <div class="change up">▲ YoY +87.2%</div>
+    </div>
+    <div class="kpi blue">
+      <div class="label">グループ修正ROE</div>
+      <div class="num blue">15.7%</div>
+      <div class="sub">計画 14.3%</div>
+      <div class="change up">▲ +1.4pt over plan</div>
+    </div>
+    <div class="kpi cyan">
+      <div class="label">正味収入保険料</div>
+      <div class="num cyan">4.67兆円</div>
+      <div class="sub">前年比 +4,125億円</div>
+      <div class="change up">▲ YoY +9.7%</div>
+    </div>
+    <div class="kpi gold">
+      <div class="label">ESR（ソルベンシー）</div>
+      <div class="num gold">226%</div>
+      <div class="sub">目標レンジ 180〜250%</div>
+      <div class="change up">▲ 財務健全性を維持</div>
+    </div>
+    <div class="kpi green">
+      <div class="label">年間DPS</div>
+      <div class="num green">145円</div>
+      <div class="sub">中間72.5円 + 期末72.5円</div>
+      <div class="change up">▲ 連続増配継続</div>
+    </div>
+    <div class="kpi blue">
+      <div class="label">EPS（1株当たり純利益）</div>
+      <div class="num blue">445.5円</div>
+      <div class="sub">前年比 +213.7円</div>
+      <div class="change up">▲ YoY +92.2%</div>
+    </div>
+    <div class="kpi cyan">
+      <div class="label">経常利益</div>
+      <div class="num cyan">9,290億円</div>
+      <div class="sub">前年比 +5,125億円増</div>
+      <div class="change up">▲ YoY +123.1%</div>
+    </div>
+  </div>
+</section>
+
+<!-- ③ 財務推移チャート -->
+<section id="financials">
+  <div class="section-tag">Financial Analysis</div>
+  <h2 class="section-title">財務指標の推移 (FY2021–2025)</h2>
+  <p class="section-sub">5期分の主要財務指標をビジュアル化。利益の急拡大とROEの急改善が鮮明。</p>
+
+  <div class="charts-2" style="margin-bottom:1.5rem;">
+    <div class="chart-wrap">
+      <div class="chart-title">📊 経常収益 / 正味収入保険料（百万円）</div>
+      <div class="chart-box"><canvas id="c1"></canvas></div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">💰 経常利益 / 当期純利益（百万円）</div>
+      <div class="chart-box"><canvas id="c2"></canvas></div>
+    </div>
+  </div>
+  <div class="charts-2" style="margin-bottom:1.5rem;">
+    <div class="chart-wrap">
+      <div class="chart-title">📈 自己資本利益率 ROE（%）</div>
+      <div class="chart-box"><canvas id="c3"></canvas></div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">💳 1株当たり指標（EPS / DPS）</div>
+      <div class="chart-box"><canvas id="c4"></canvas></div>
+    </div>
+  </div>
+  <div class="charts-2">
+    <div class="chart-wrap">
+      <div class="chart-title">🏦 純資産額 / 総資産（百万円）</div>
+      <div class="chart-box"><canvas id="c5"></canvas></div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">💸 キャッシュ・フロー推移（百万円）</div>
+      <div class="chart-box"><canvas id="c6"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- ④ セグメント -->
+<section id="segments">
+  <div class="section-tag">Segment Analysis</div>
+  <h2 class="section-title">事業セグメント分析</h2>
+  <p class="section-sub">5事業領域 — 国内損害保険・国内生命保険・海外・金融サービス・デジタルで構成</p>
+
+  <div class="charts-2" style="margin-bottom:2rem;">
+    <div class="chart-wrap">
+      <div class="chart-title">🥧 セグメント別修正利益構成（FY2025概算）</div>
+      <div class="chart-box"><canvas id="c7"></canvas></div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">📊 三井住友海上 主要指標（単体）</div>
+      <div class="chart-box"><canvas id="c8"></canvas></div>
+    </div>
+  </div>
+
+  <div class="cards-3">
+    <div class="card">
+      <div class="card-icon">🇯🇵</div>
+      <h3>国内損害保険</h3>
+      <p>三井住友海上・あいおいNKD・三井ダイレクト3社体制。MSI経常利益 <strong class="highlight">5,760億円</strong>（YoY +169%）。火災・自動車保険の料率適正化が大幅改善を牽引。</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🛡️</div>
+      <h3>国内生命保険</h3>
+      <p>三井住友海上あいおい生命・プライマリー生命2社。金利上昇・外貨建債券積み上げで利差益拡大。あいおい生命当期純利益 <strong class="highlight">296億円</strong>（+14億円）。</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌐</div>
+      <h3>海外事業</h3>
+      <p>MS Amlin（ロイズ）・MS Transverse（米国MGA）・アジア・欧州。正味収入保険料 <strong class="highlight">4.67兆円</strong>の主な成長源。為替追い風あり。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ⑤ バリュエーション -->
+<section id="valuation">
+  <div class="section-tag">Valuation</div>
+  <h2 class="section-title">バリュエーション分析</h2>
+  <p class="section-sub">複数アプローチによる目標株価算定</p>
+
+  <div class="val-grid" style="margin-bottom:2rem;">
+    <div>
+      <div class="val-card">
+        <h3>マルチプル比較</h3>
+        <table>
+          <thead><tr><th>指標</th><th>現在値</th><th>セクター平均</th><th>評価</th></tr></thead>
+          <tbody>
+            <tr><td>予想PER</td><td>約7.2x</td><td>11〜14x</td><td><span class="badge low">割安</span></td></tr>
+            <tr><td>PBR</td><td>約1.2x</td><td>1.1〜1.6x</td><td><span class="badge low">適正〜割安</span></td></tr>
+            <tr><td>ROE</td><td>16.3%</td><td>8〜12%</td><td><span class="badge low">優位</span></td></tr>
+            <tr><td>配当利回り</td><td>約4.5%</td><td>2〜3.5%</td><td><span class="badge low">高利回り</span></td></tr>
+            <tr><td>ESR</td><td>226%</td><td>180〜250%</td><td><span class="badge low">適正</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="price-target">
+        <div class="label">12ヶ月 目標株価</div>
+        <div class="value">¥3,800</div>
+        <div class="upside">▲ 潜在アップサイド +25〜30%</div>
+        <p style="font-size:.82rem;color:var(--text3);margin-top:1rem;">現在株価 約¥2,950（2026年3月末参照）<br>PER 8.5x × EPS約445.5円ベース</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-tag" style="margin-top:2rem;">Scenario Analysis</div>
+  <h3 style="font-size:1.3rem;font-weight:700;margin-bottom:1.5rem;">シナリオ別目標株価</h3>
+  <div class="scenario-grid">
+    <div class="scenario bear">
+      <div class="tag">🐻 Bear Case</div>
+      <div class="price">¥2,400</div>
+      <p style="font-size:.8rem;color:var(--text2);margin-bottom:.7rem;">下振れリスクが顕在化した場合</p>
+      <ul><li>大規模自然災害の頻発化</li><li>政策株式売却益の急減</li><li>円高進行で海外利益目減り</li><li>コンプライアンス再発・規制強化</li></ul>
+    </div>
+    <div class="scenario base">
+      <div class="tag">📊 Base Case</div>
+      <div class="price">¥3,800</div>
+      <p style="font-size:.8rem;color:var(--text2);margin-bottom:.7rem;">メインシナリオ</p>
+      <ul><li>政策株式削減が計画通り進捗</li><li>保険料率適正化で損害率安定</li><li>海外事業が着実拡大</li><li>DPS 160〜170円台へ増配</li></ul>
+    </div>
+    <div class="scenario bull">
+      <div class="tag">🐂 Bull Case</div>
+      <div class="price">¥4,500</div>
+      <p style="font-size:.8rem;color:var(--text2);margin-bottom:.7rem;">超過達成シナリオ</p>
+      <ul><li>海外M&Aによる大幅利益拡大</li><li>金利上昇で運用利回り急改善</li><li>修正ROE 18%超を達成</li><li>追加自社株買いの大規模実施</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ⑥ 株主還元 -->
+<section id="returns" style="padding-top:0;">
+  <div class="section-tag">Capital Returns</div>
+  <h2 class="section-title">株主還元政策</h2>
+  <p class="section-sub">「修正利益の50%を配当+自社株買いで還元」を堅持。追加還元も機動的に実施。</p>
+  <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+    <div class="kpi green">
+      <div class="label">年間DPS（FY2025/3）</div>
+      <div class="num green">145円</div>
+      <div class="sub">中間72.5 + 期末72.5</div>
+    </div>
+    <div class="kpi gold">
+      <div class="label">配当総額（中間）</div>
+      <div class="num gold">1,115億円</div>
+      <div class="sub">2024年11月取締役会決議</div>
+    </div>
+    <div class="kpi blue">
+      <div class="label">株主還元方針</div>
+      <div class="num blue">50%</div>
+      <div class="sub">グループ修正利益に対するペイアウト</div>
+    </div>
+    <div class="kpi cyan">
+      <div class="label">政策株式削減目標</div>
+      <div class="num cyan">2030/3</div>
+      <div class="sub">上場政策株式をゼロへ</div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑦ リスク分析 -->
+<section id="risks">
+  <div class="section-tag">Risk Analysis</div>
+  <h2 class="section-title">主要リスクと軽減策</h2>
+  <p class="section-sub">投資判断において考慮すべき定量・定性リスク</p>
+  <div class="chart-wrap">
+    <table>
+      <thead><tr><th>リスク項目</th><th>影響度</th><th>発生確率</th><th>説明と軽減策</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>🌪️ 大規模自然災害</strong></td>
+          <td><span class="badge high">高</span></td>
+          <td><span class="badge mid">中</span></td>
+          <td>台風・洪水・地震等の頻発化。再保険活用とCat予算設定でリスク分散。ESR管理を厳格化。</td>
+        </tr>
+        <tr>
+          <td><strong>💱 為替リスク（円高）</strong></td>
+          <td><span class="badge mid">中〜高</span></td>
+          <td><span class="badge mid">中</span></td>
+          <td>海外事業利益は円換算で目減り。ヘッジ戦略と海外現地法人の現地通貨運営で一定程度緩和。</td>
+        </tr>
+        <tr>
+          <td><strong>⚖️ 規制・コンプライアンス</strong></td>
+          <td><span class="badge high">高</span></td>
+          <td><span class="badge low">低〜中</span></td>
+          <td>企業保険料調整問題を受けた業務改善計画。ガバナンス強化・第2・3線機能強化を推進中。</td>
+        </tr>
+        <tr>
+          <td><strong>📉 保険引受損益（損害率上昇）</strong></td>
+          <td><span class="badge mid">中</span></td>
+          <td><span class="badge mid">中</span></td>
+          <td>MSI損害率は66.7%（+1.1pt）。保険料率適正化・アンダーライティング強化で対処中。</td>
+        </tr>
+        <tr>
+          <td><strong>📊 政策株式売却益の一過性</strong></td>
+          <td><span class="badge mid">中</span></td>
+          <td><span class="badge high">高（確実）</span></td>
+          <td>FY2025/3利益の大部分が売却益。2030年ゼロ化後は継続利益への依存度が高まる。</td>
+        </tr>
+        <tr>
+          <td><strong>🌡️ 気候変動・物理リスク</strong></td>
+          <td><span class="badge high">高（長期）</span></td>
+          <td><span class="badge mid">中（長期）</span></td>
+          <td>TCFD対応・シナリオ分析を実施。投融資ポートフォリオのESGリスク評価体制を整備。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ⑧ ESG -->
+<section id="esg">
+  <div class="section-tag">ESG Analysis</div>
+  <h2 class="section-title">ESG・サステナビリティ</h2>
+  <p class="section-sub">「グリーンレジリエンス」を掲げ、社会課題解決と企業価値向上を両立</p>
+  <div class="esg-grid">
+    <div class="esg-card">
+      <div class="hd"><div class="ico">🌿</div><div class="ttl">E — Environment</div></div>
+      <p style="font-size:.82rem;color:var(--text2);margin-bottom:.8rem;">スコープ1・2排出量を2030年に2019年比▲50%目標。TCFD対応の気候シナリオ分析を実施済み。石炭採掘・火力への新規投融資を禁止。</p>
+      <div>GHG削減進捗（スコープ1+2）</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:35%;background:linear-gradient(90deg,#10b981,#059669);"></div></div>
+      <span style="font-size:.75rem;color:var(--text3);">実績 -35.3% / 目標 -50%（2030）</span>
+    </div>
+    <div class="esg-card">
+      <div class="hd"><div class="ico">👥</div><div class="ttl">S — Social</div></div>
+      <p style="font-size:.82rem;color:var(--text2);margin-bottom:.8rem;">女性管理職比率の引き上げに継続取り組み。MSI 19.1%、あいおい生命 25.3%（2025年4月実績）。人的資本投資・DX人材育成を加速。</p>
+      <div>女性管理職比率（MSI）</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:64%;background:linear-gradient(90deg,#7c3aed,#4f7cff);"></div></div>
+      <span style="font-size:.75rem;color:var(--text3);">19.1% / 目標 30%（2030）</span>
+    </div>
+    <div class="esg-card">
+      <div class="hd"><div class="ico">🏛️</div><div class="ttl">G — Governance</div></div>
+      <p style="font-size:.82rem;color:var(--text2);margin-bottom:.8rem;">企業保険問題後に経営陣ガバナンス強化。社外取締役5名体制。3ラインディフェンスの第2・3線機能を強化。ESR 226%で財務健全性を維持。</p>
+      <div>ESR水準（ソルベンシー）</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:76%;background:linear-gradient(90deg,#fbbf24,#d97706);"></div></div>
+      <span style="font-size:.75rem;color:var(--text3);">226% / 目標レンジ 180〜250%</span>
+    </div>
+  </div>
+</section>
+
+<!-- ⑨ 沿革・成長軌跡 -->
+<section id="history" style="padding-top:0;">
+  <div class="section-tag">Company History</div>
+  <h2 class="section-title">成長の軌跡</h2>
+  <div class="timeline">
+    <div class="timeline-item"><div class="year">2008年</div><h4>MS&ADホールディングス設立・東証上場</h4><p>三井住友海上火災保険の株式移転により持株会社を設立。東証・名証一部に上場。</p></div>
+    <div class="timeline-item"><div class="year">2010年</div><h4>あいおい日動海上と合併</h4><p>あいおい損害保険・日動火災海上保険が合併し「あいおいニッセイ同和損害保険」としてグループ入り。規模が飛躍的に拡大。</p></div>
+    <div class="timeline-item"><div class="year">2017年</div><h4>MS Amlin完全子会社化</h4><p>英国ロイズ大手MS Amlinを完全子会社化。ロイズ・再保険マーケットへの本格参入で海外基盤を構築。</p></div>
+    <div class="timeline-item"><div class="year">2022年</div><h4>中期経営計画（2022–2025）スタート</h4><p>CSV×DXのグローバル展開・政策株式削減・1プラットフォーム戦略を軸とした構造改革に着手。</p></div>
+    <div class="timeline-item"><div class="year">2024年</div><h4>第2ステージ開始・株式分割3分割</h4><p>中計第2ステージ開始。流動性向上目的で1:3株式分割実施。企業保険問題への業務改善計画を同時推進。</p></div>
+    <div class="timeline-item"><div class="year">2025年</div><h4>過去最高益 — グループ修正利益7,317億円</h4><p>政策株式売却加速・海外好調で過去最高益更新。修正ROE 15.7%。ESR 226%で財務健全性も維持。連続増配継続。</p></div>
+  </div>
+</section>
+
+<!-- ⑩ まとめ -->
+<section id="summary">
+  <div class="section-tag">Summary</div>
+  <h2 class="section-title">投資まとめ</h2>
+  <p class="section-sub">複数のポジティブカタリストが重なり、中期的なアップサイドが期待できる</p>
+  <div class="cards-3">
+    <div class="card" style="border-color:rgba(16,185,129,.3);">
+      <h3 style="color:var(--green);">✅ Buy の理由</h3>
+      <p>記録的ROE15.7%・EPS急拡大・政策株式ゼロへの資本解放・海外成長の複合カタリスト。PER約7倍は割安。高配当利回り約4.5%が下値を支持。</p>
+    </div>
+    <div class="card" style="border-color:rgba(245,158,11,.3);">
+      <h3 style="color:var(--yellow);">⚠️ 注視ポイント</h3>
+      <p>FY2025/3益の一部は政策株式売却益（一過性）。自然災害・円高・コンプライアンスリスク。来期以降の修正利益の「実力ベース」を精査する必要あり。</p>
+    </div>
+    <div class="card" style="border-color:rgba(79,124,255,.3);">
+      <h3 style="color:var(--accent);">🎯 目標株価 ¥3,800</h3>
+      <p>Baseケース：PER 8.5x×EPS445.5円ベース。現在株価比約+25〜30%のアップサイド。継続配当効果も含めた総合リターンは+30%超を想定。</p>
+    </div>
+  </div>
+
+  <div style="margin-top:2.5rem;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;">
+    <h3 style="margin-bottom:1rem;font-size:1rem;">🏷️ 注目キーワード</h3>
+    <div>
+      <span class="tag-pill">政策株式削減</span>
+      <span class="tag-pill">グループ修正ROE 15.7%</span>
+      <span class="tag-pill">海外事業拡大</span>
+      <span class="tag-pill">MS Amlin</span>
+      <span class="tag-pill">DPS 145円</span>
+      <span class="tag-pill">ESR 226%</span>
+      <span class="tag-pill">TCFD対応</span>
+      <span class="tag-pill">1プラットフォーム戦略</span>
+      <span class="tag-pill">保険料率適正化</span>
+      <span class="tag-pill">グリーンレジリエンス</span>
+      <span class="tag-pill">修正利益50%還元</span>
+      <span class="tag-pill">CSV×DX</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>📄 データソース：MS&ADインシュアランスグループHD 有価証券報告書 第17期（FY2025/3）EDINET E03854</p>
+  <p style="margin-top:.5rem;">⚠️ 本資料は情報提供・学術目的のみであり、投資勧誘を目的にしたものではありません。投資判断はご自身の判断と責任で行ってください。</p>
+  <p style="margin-top:.5rem;">作成：Dexter Equity Research System | 2026年3月30日</p>
+</footer>
+
+<script>
+const YEARS = ['FY2021/3','FY2022/3','FY2023/3','FY2024/3','FY2025/3'];
+const gridColor = 'rgba(255,255,255,0.06)';
+const tickColor = '#64748b';
+const defaults = {
+  plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}}},
+  scales:{
+    x:{grid:{color:gridColor},ticks:{color:tickColor}},
+    y:{grid:{color:gridColor},ticks:{color:tickColor}}
+  }
+};
+
+// c1: 経常収益 / 正味収入保険料
+new Chart(document.getElementById('c1'),{
+  type:'bar',
+  data:{
+    labels:YEARS,
+    datasets:[
+      {label:'経常収益',data:[4892244,5132042,5250794,6572889,6660813],backgroundColor:'rgba(79,124,255,0.7)',borderRadius:6},
+      {label:'正味収入保険料',data:[3500996,3609052,3933235,4261736,4674301],backgroundColor:'rgba(6,182,212,0.6)',borderRadius:6}
+    ]
+  },
+  options:{...defaults,responsive:true,maintainAspectRatio:false}
+});
+
+// c2: 経常利益 / 当期純利益
+new Chart(document.getElementById('c2'),{
+  type:'bar',
+  data:{
+    labels:YEARS,
+    datasets:[
+      {label:'経常利益',data:[306524,390499,292262,416440,928989],backgroundColor:'rgba(124,58,237,0.7)',borderRadius:6},
+      {label:'当期純利益',data:[144398,262799,211006,369266,691657],backgroundColor:'rgba(16,185,129,0.65)',borderRadius:6}
+    ]
+  },
+  options:{...defaults,responsive:true,maintainAspectRatio:false}
+});
+
+// c3: ROE
+new Chart(document.getElementById('c3'),{
+  type:'line',
+  data:{
+    labels:YEARS,
+    datasets:[{
+      label:'自己資本利益率 ROE(%)',
+      data:[5.22,8.29,6.62,9.77,16.34],
+      borderColor:'#4f7cff',
+      backgroundColor:'rgba(79,124,255,0.15)',
+      fill:true,
+      tension:.4,
+      pointBackgroundColor:'#4f7cff',
+      pointRadius:5
+    }]
+  },
+  options:{...defaults,responsive:true,maintainAspectRatio:false}
+});
+
+// c4: EPS / DPS
+new Chart(document.getElementById('c4'),{
+  type:'bar',
+  data:{
+    labels:YEARS,
+    datasets:[
+      {label:'EPS（円）',data:[85.26,158.17,130.54,231.83,445.52],backgroundColor:'rgba(251,191,36,0.75)',borderRadius:6},
+      {label:'DPS概算（円）',data:[75,90,100,120,145],backgroundColor:'rgba(16,185,129,0.65)',borderRadius:6}
+    ]
+  },
+  options:{...defaults,responsive:true,maintainAspectRatio:false}
+});
+
+// c5: 純資産 / 総資産
+new Chart(document.getElementById('c5'),{
+  type:'bar',
+  data:{
+    labels:YEARS,
+    datasets:[
+      {label:'純資産（百万円）',data:[3126657,3302749,3139501,4513562,4052835],backgroundColor:'rgba(79,124,255,0.7)',borderRadius:6},
+      {label:'総資産（百万円）',data:[24142562,25033846,24349984,26960207,26241298],backgroundColor:'rgba(100,116,139,0.45)',borderRadius:6}
+    ]
+  },
+  options:{...defaults,responsive:true,maintainAspectRatio:false}
+});
+
+// c6: CF
+new Chart(document.getElementById('c6'),{
+  type:'bar',
+  data:{
+    labels:YEARS,
+    datasets:[
+      {label:'営業CF',data:[-323912,236708,194153,549466,660188],backgroundColor:'rgba(16,185,129,0.65)',borderRadius:6},
+      {label:'投資CF',data:[43925,-71976,480953,-276825,-558725],backgroundColor:'rgba(239,68,68,0.55)',borderRadius:6},
+      {label:'財務CF',data:[79278,58545,-314502,-231549,-659578],backgroundColor:'rgba(251,191,36,0.55)',borderRadius:6}
+    ]
+  },
+  options:{...defaults,responsive:true,maintainAspectRatio:false,plugins:{...defaults.plugins,tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.raw.toLocaleString()}百万円`}}}}
+});
+
+// c7: セグメント円グラフ
+new Chart(document.getElementById('c7'),{
+  type:'doughnut',
+  data:{
+    labels:['国内損害保険（MSI）','あいおいNKD','国内生命保険','海外事業','その他'],
+    datasets:[{
+      data:[55,18,10,14,3],
+      backgroundColor:['#4f7cff','#7c3aed','#10b981','#06b6d4','#64748b'],
+      borderColor:'rgba(255,255,255,0.1)',
+      borderWidth:2,
+      hoverOffset:8
+    }]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#94a3b8',font:{size:11},padding:14}}}}
+});
+
+// c8: MSI指標
+new Chart(document.getElementById('c8'),{
+  type:'bar',
+  data:{
+    labels:['正味収入保険料','保険引受利益','経常利益','当期純利益'],
+    datasets:[
+      {label:'FY2024/3',data:[1623307,20709,214319,167777],backgroundColor:'rgba(100,116,139,0.5)',borderRadius:6},
+      {label:'FY2025/3',data:[1679248,54601,576026,459900],backgroundColor:'rgba(79,124,255,0.75)',borderRadius:6}
+    ]
+  },
+  options:{...defaults,responsive:true,maintainAspectRatio:false,plugins:{...defaults.plugins,tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.raw.toLocaleString()}百万円`}}}}
+});
+</script>
+</body>
+</html>

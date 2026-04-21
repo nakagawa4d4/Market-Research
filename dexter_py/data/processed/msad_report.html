@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MS&AD (8725) — AI Equity Research Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg2: #161b22;
+      --bg3: #1c2230;
+      --border: #30363d;
+      --green: #00c896;
+      --green-dim: rgba(0,200,150,0.12);
+      --red: #f85149;
+      --yellow: #e3b341;
+      --blue: #58a6ff;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --card-radius: 14px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* === HEADER === */
+    .header {
+      background: linear-gradient(135deg, #0d1f3c 0%, #0d1117 60%);
+      border-bottom: 1px solid var(--border);
+      padding: 32px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .header-left h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #fff;
+    }
+    .header-left h1 span { color: var(--green); }
+    .header-left .subtitle {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .badge {
+      background: var(--green);
+      color: #000;
+      font-weight: 700;
+      font-size: 15px;
+      border-radius: 8px;
+      padding: 10px 24px;
+      letter-spacing: 1px;
+      animation: pulse 2.5s ease infinite;
+    }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(0,200,150,0.5); }
+      50% { box-shadow: 0 0 0 12px rgba(0,200,150,0); }
+    }
+
+    /* === NAV === */
+    nav {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      white-space: nowrap;
+      padding: 0 40px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav a {
+      display: inline-block;
+      padding: 16px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      transition: all .2s;
+    }
+    nav a:hover { color: var(--text); border-bottom-color: var(--green); }
+
+    /* === LAYOUT === */
+    .container { max-width: 1100px; margin: 0 auto; padding: 40px; }
+
+    /* === SECTION === */
+    section { margin-bottom: 56px; scroll-margin-top: 60px; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-num {
+      background: var(--green-dim);
+      border: 1px solid var(--green);
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+    }
+    .section-header h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .section-header .en { font-size: 13px; color: var(--muted); font-weight: 400; margin-left: 8px; }
+
+    /* === CARDS === */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--card-radius);
+      padding: 24px;
+      transition: border-color .2s;
+    }
+    .card:hover { border-color: #3d444d; }
+
+    /* === KPI GRID === */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .kpi-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--card-radius);
+      padding: 20px;
+      text-align: center;
+      transition: transform .2s, border-color .2s;
+    }
+    .kpi-card:hover { transform: translateY(-3px); border-color: var(--green); }
+    .kpi-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .kpi-value { font-size: 26px; font-weight: 700; color: var(--green); }
+    .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    /* === TABLE === */
+    .table-wrap { overflow-x: auto; border-radius: var(--card-radius); }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    thead tr { background: var(--bg3); }
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    .highlight-col { color: var(--green); font-weight: 600; }
+
+    /* === THESIS PILLARS === */
+    .pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+    .pillar {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--card-radius);
+      padding: 22px;
+      border-top: 3px solid var(--green);
+      transition: transform .2s;
+    }
+    .pillar:hover { transform: translateY(-3px); }
+    .pillar-num { font-size: 12px; color: var(--green); font-weight: 700; margin-bottom: 8px; }
+    .pillar h3 { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+    .pillar p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* === RISK TABLE === */
+    .risk-high { color: var(--red); font-weight: 600; }
+    .risk-mid { color: var(--yellow); font-weight: 600; }
+    .risk-low { color: var(--green); font-weight: 600; }
+
+    /* === CATALYST LIST === */
+    .catalyst-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .catalyst-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--bg3);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .catalyst-list .icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    /* === VERDICT === */
+    .verdict {
+      background: linear-gradient(135deg, #0a2b1f 0%, var(--bg2) 100%);
+      border: 1px solid var(--green);
+      border-radius: var(--card-radius);
+      padding: 32px;
+      text-align: center;
+    }
+    .verdict h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .verdict p { color: var(--muted); font-size: 14px; max-width: 680px; margin: 0 auto; line-height: 1.7; }
+    .verdict .big { font-size: 40px; font-weight: 800; color: var(--green); margin: 12px 0; }
+
+    /* === IFRAME CHART === */
+    .chart-container {
+      border-radius: var(--card-radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+    iframe { display: block; width: 100%; height: 480px; border: none; }
+
+    /* === FOOTER === */
+    footer {
+      text-align: center;
+      padding: 32px 40px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .tag { display: inline-block; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 2px 8px; font-size: 12px; color: var(--muted); margin-left: 6px; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <h1>MS&amp;AD <span>Insurance Group HD</span> <span class="tag">8725.T</span></h1>
+    <div class="subtitle">AI Equity Research Report · Generated 2026-03-30 · AIアナリスト＋AIファンドマネージャー</div>
+  </div>
+  <div class="badge">🟢 BUY</div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#recommendation">Ⅰ. 提案</a>
+  <a href="#company">Ⅱ. 企業分析</a>
+  <a href="#industry">Ⅲ. 市場分析</a>
+  <a href="#competition">Ⅳ. 競合分析</a>
+  <a href="#thesis">Ⅴ. 投資仮説</a>
+  <a href="#financial">Ⅵ. 財務分析</a>
+  <a href="#catalyst">Ⅶ. カタリスト</a>
+  <a href="#valuation">Ⅷ. バリュエーション</a>
+  <a href="#risk">Ⅸ. リスク要因</a>
+</nav>
+
+<div class="container">
+
+  <!-- Ⅰ: RECOMMENDATION -->
+  <section id="recommendation">
+    <div class="section-header">
+      <span class="section-num">Ⅰ</span>
+      <h2>提案 <span class="en">Recommendation</span></h2>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">レーティング</div>
+        <div class="kpi-value">BUY</div>
+        <div class="kpi-sub">強気推奨</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">目標株価</div>
+        <div class="kpi-value">¥5,200</div>
+        <div class="kpi-sub">コンセンサス ¥4,489</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">ROE（TTM）</div>
+        <div class="kpi-value">16.3%</div>
+        <div class="kpi-sub">損保大手トップ水準</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">配当（FY26予）</div>
+        <div class="kpi-value">¥155</div>
+        <div class="kpi-sub">13期連続増配見通し</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">配当利回り</div>
+        <div class="kpi-value">~3.7%</div>
+        <div class="kpi-sub">特別配当込み</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">20D ボラティリティ(年率)</div>
+        <div class="kpi-value">25.1%</div>
+        <div class="kpi-sub">dexter_py 実測値</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICE CHART -->
+  <section>
+    <div class="section-header">
+      <span class="section-num">📈</span>
+      <h2>株価チャート <span class="en">Price Action</span></h2>
+    </div>
+    <div class="chart-container">
+      <iframe src="8725_price_chart.html" title="MS&AD Price Chart"></iframe>
+    </div>
+  </section>
+
+  <!-- Ⅱ: COMPANY ANALYSIS -->
+  <section id="company">
+    <div class="section-header">
+      <span class="section-num">Ⅱ</span>
+      <h2>企業分析 <span class="en">Company Analysis</span></h2>
+    </div>
+    <div class="card">
+      <p style="margin-bottom:20px;">MS&ADインシュアランスグループHD（8725）は、<strong>三井住友海上火災保険</strong>と<strong>あいおいニッセイ同和損害保険</strong>を中核とする国内第2位の損害保険持株会社。生命保険や海外事業も展開し、総資産は日本最大級の損保グループを形成しています。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>セグメント</th><th>主要会社</th><th>特徴</th></tr></thead>
+          <tbody>
+            <tr><td class="highlight-col">国内損保</td><td>三井住友海上 / あいおいニッセイ同和</td><td>自動車保険でトヨタとの強固な連携。2025年3月期から火災保険が黒字転換</td></tr>
+            <tr><td class="highlight-col">国内生保</td><td>三井住友海上あいおい生命</td><td>損保グループ内のクロスセル戦略を推進</td></tr>
+            <tr><td class="highlight-col">海外事業</td><td>MS Amlin（ロイズ）/ アジア各社</td><td>全地域で増益。Challenger社株式売却益がFY26に寄与</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:18px; padding:14px 18px; background:var(--bg3); border-radius:10px; border-left: 3px solid var(--green);">
+        <strong>🔑 構造変化:</strong> 三井住友海上 ＋ あいおいニッセイ同和は<strong>2027年4月に合併予定</strong>。業界最大規模のコスト削減と引受規律の一本化が実現する見込み。
+      </div>
+    </div>
+  </section>
+
+  <!-- Ⅲ: INDUSTRY LANDSCAPE -->
+  <section id="industry">
+    <div class="section-header">
+      <span class="section-num">Ⅲ</span>
+      <h2>市場分析 <span class="en">Industry Landscape</span></h2>
+    </div>
+    <div class="card">
+      <p style="margin-bottom:20px;">日本の損害保険市場は3メガ損保グループが収入保険料の<strong>約85〜90%</strong>を占める高度な寡占市場。少子高齢化で国内は成熟しているが、以下の構造変化が業界に新たな利益成長をもたらしています。</p>
+      <ul class="catalyst-list">
+        <li><span class="icon">🚗</span><div><strong>自動車保険の料率適正化：</strong>修理費高騰・EV普及に対応した保険料引き上げが収益を底上げ</div></li>
+        <li><span class="icon">🏠</span><div><strong>火災保険の黒字化：</strong>長年の赤字体質から脱却。料率の適正化により業界全体の採算が改善</div></li>
+        <li><span class="icon">🏦</span><div><strong>金利正常化の恩恵：</strong>日銀の段階的利上げが資産運用利回りを押し上げ。長期的に保険会社の財務基盤が強化</div></li>
+        <li><span class="icon">🌐</span><div><strong>気候変動・サイバーリスク領域：</strong>新たな保険ニーズへの対応が次の成長の柱として浮上</div></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Ⅳ: COMPETITION -->
+  <section id="competition">
+    <div class="section-header">
+      <span class="section-num">Ⅳ</span>
+      <h2>競合分析 <span class="en">Competition Analysis</span></h2>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>指標</th><th class="highlight-col">MS&AD（8725）</th><th>東京海上HD（8766）</th><th>SOMPO HD（8630）</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>純利益（FY25）</td><td class="highlight-col">約6,916億円</td><td>1兆円超（業界初）</td><td>約3,500億円</td></tr>
+            <tr><td>ROE（TTM）</td><td class="highlight-col">~16.3%</td><td>~18%+</td><td>~15%</td></tr>
+            <tr><td>配当（FY26予）</td><td class="highlight-col">155円（13期連続増配）</td><td>約350円</td><td>約170円</td></tr>
+            <tr><td>政策株ゼロ目標</td><td class="highlight-col">2030年3月末</td><td>2030年代初頭</td><td>2030年代</td></tr>
+            <tr><td>独自の強み</td><td class="highlight-col">自動車保険・合併カタリスト</td><td>海外収益 No.1</td><td>介護・ヘルスケア多角化</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:18px; padding:14px 18px; background:var(--bg3); border-radius:10px; border-left:3px solid var(--blue);">
+        <strong>💡 AIアナリスト評価：</strong> 東京海上は利益の質で最高だが、MS&ADは<strong>国内合併という独自カタリスト</strong>を保有し、2027年以降の収益改善幅が最も大きい。バリュエーションの割安感も最高水準。
+      </div>
+    </div>
+  </section>
+
+  <!-- Ⅴ: INVESTMENT THESIS -->
+  <section id="thesis">
+    <div class="section-header">
+      <span class="section-num">Ⅴ</span>
+      <h2>投資仮説 <span class="en">Investment Thesis</span></h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-num">仮説 1</div>
+        <h3>政策保有株ゼロ化 → 株主還元の永続エンジン</h3>
+        <p>2030年3月末までの政策株ゼロを公約。毎期の売却益が自社株買い・特別配当に直結する構造が確立済み。FY2026から特別配当17.5円も実施。</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">仮説 2</div>
+        <h3>2027年合併 → コスト革命</h3>
+        <p>三井住友海上＋あいおいが合併すれば、システム・バックオフィスの重複コストが大幅削減。引受規律の一本化により採算性が構造的に改善。</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">仮説 3</div>
+        <h3>金利上昇 → キャリー収益の底上げ</h3>
+        <p>日銀の段階的利上げは、保険会社が長期保有する円建て国債・社債の再投資利回りを押し上げ。数年単位で利益に累積的に寄与。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ⅵ: FINANCIAL ANALYSIS -->
+  <section id="financial">
+    <div class="section-header">
+      <span class="section-num">Ⅵ</span>
+      <h2>財務分析 <span class="en">Financial Analysis</span></h2>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>指標</th><th>FY2024（3月期）</th><th>FY2025（3月期）</th><th class="highlight-col">FY2026（3月期）予想</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>経常収益</td><td>約5.9兆円</td><td>6.66兆円</td><td class="highlight-col">拡大基調</td></tr>
+            <tr><td>当期純利益</td><td>約3,600億円</td><td>6,916億円</td><td class="highlight-col">政策株売却益剥落で減益、基礎益は増益</td></tr>
+            <tr><td>EPS</td><td>約234円</td><td>445.52円</td><td class="highlight-col">合併費用を織り込み中</td></tr>
+            <tr><td>ROE</td><td>—</td><td>~16.3%</td><td class="highlight-col">目標ROE 12%超維持</td></tr>
+            <tr><td>DPS（配当）</td><td>145円</td><td>155円</td><td class="highlight-col">継続増配方針・特別配当上乗せ</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:18px; padding:14px 18px; background:var(--bg3); border-radius:10px; border-left:3px solid var(--green);">
+        <strong>配当政策：</strong> グループ修正利益の<strong>50%</strong>を基本配当として還元。政策株売却益の一部を毎期「特別配当」として上乗せするハイブリッド還元を実施中。
+      </div>
+    </div>
+  </section>
+
+  <!-- Ⅶ: CATALYST -->
+  <section id="catalyst">
+    <div class="section-header">
+      <span class="section-num">Ⅶ</span>
+      <h2>株価変動材料 <span class="en">Catalyst</span></h2>
+    </div>
+    <div class="card">
+      <p style="margin-bottom: 16px; font-weight:600; color: var(--green);">📈 強気材料（Upside）</p>
+      <ul class="catalyst-list" style="margin-bottom:24px;">
+        <li><span class="icon">🔀</span><div><strong>2027年国内損保合併完了</strong> → システムコスト削減・採算改善の構造的インパクト</div></li>
+        <li><span class="icon">💹</span><div><strong>政策株売却加速</strong> → サプライズ的な自社株買い・特別配当の増額</div></li>
+        <li><span class="icon">🌤️</span><div><strong>自然災害少発年</strong> → 国内損保事業の利益が急増（FY2026 Q3まではこのシナリオ）</div></li>
+        <li><span class="icon">🏦</span><div><strong>日銀の追加利上げ</strong> → 資産運用収益がジワジワと底上げ</div></li>
+      </ul>
+      <p style="margin-bottom: 16px; font-weight:600; color: var(--red);">📉 弱気材料（Downside）</p>
+      <ul class="catalyst-list">
+        <li><span class="icon">🌀</span><div><strong>大規模自然災害の集中発生</strong> → 保険金支払い急増。ただし再保険でリスク分散済み</div></li>
+        <li><span class="icon">📉</span><div><strong>政策株市場価格の急落</strong> → 売却タイミングずれで特別配当原資が縮小</div></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Ⅷ: VALUATION -->
+  <section id="valuation">
+    <div class="section-header">
+      <span class="section-num">Ⅷ</span>
+      <h2>バリュエーション <span class="en">Valuation</span></h2>
+    </div>
+    <div class="kpi-grid" style="margin-bottom:20px;">
+      <div class="kpi-card">
+        <div class="kpi-label">実績 PER</div>
+        <div class="kpi-value">~9.4x</div>
+        <div class="kpi-sub">(EPS 445円 / 株価4,200円想定)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">AI 目標株価</div>
+        <div class="kpi-value">¥5,200</div>
+        <div class="kpi-sub">合併効果込みEPS×PER10倍</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">配当利回り</div>
+        <div class="kpi-value">3.7%</div>
+        <div class="kpi-sub">特別配当込み</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">コンセンサス目標値</div>
+        <div class="kpi-value">¥4,489</div>
+        <div class="kpi-sub">アナリスト平均</div>
+      </div>
+    </div>
+    <div class="card">
+      <p>FY2027の予想EPS（国内損保合併によるコスト削減効果込み）を<strong>約520円</strong>と想定。損保大手の適正PERとして<strong>10倍</strong>を適用することで目標株価<strong>¥5,200</strong>を算出。ROE改善によるPBRの切り上がりシナリオを加味すれば、さらなる上振れも射程内。</p>
+    </div>
+  </section>
+
+  <!-- Ⅸ: RISK FACTORS -->
+  <section id="risk">
+    <div class="section-header">
+      <span class="section-num">Ⅸ</span>
+      <h2>リスク要因 <span class="en">Risk Factors</span></h2>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>リスク</th><th>発生確率</th><th>影響度</th><th>対応・コメント</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>大規模自然災害の集中</strong></td>
+              <td>中</td>
+              <td class="risk-high">🔴 大</td>
+              <td>再保険によってリスク分散済み。ただし当たり年は一時的に株価急落する可能性</td>
+            </tr>
+            <tr>
+              <td><strong>合併コストの超過</strong></td>
+              <td>低</td>
+              <td class="risk-mid">🟡 中</td>
+              <td>2027年合併のシステム統合費用が当初見込みを上回るリスク</td>
+            </tr>
+            <tr>
+              <td><strong>政策株売却計画の遅延</strong></td>
+              <td>低</td>
+              <td class="risk-mid">🟡 中</td>
+              <td>相場急落時は売却タイミングを後ずれさせるリスク</td>
+            </tr>
+            <tr>
+              <td><strong>海外事業の不振</strong></td>
+              <td>低〜中</td>
+              <td class="risk-mid">🟡 中</td>
+              <td>ロイズ・米州での競争激化。Challenger売却後の新成長エンジンが課題</td>
+            </tr>
+            <tr>
+              <td><strong>日銀の急激な利上げ</strong></td>
+              <td>低</td>
+              <td class="risk-mid">🟠 中大</td>
+              <td>保有国債の評価損リスク。ただし長期的には運用利回り改善に転換</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section>
+    <div class="verdict">
+      <h2>🕴️ AIファンドマネージャー — 最終投資判断</h2>
+      <div class="big">BUY / OVERWEIGHT</div>
+      <p>
+        政策株ゼロ化・国内損保合併・金利上昇という<strong>3つの独立したカタリスト</strong>が時間軸をずらして機能するため、中長期（2〜3年）の保有に最も適した銘柄の一つと判断します。
+        短期的な自然災害ノイズによる調整局面は絶好の押し目とみなし、日本株バリュー・高配当ポートフォリオの<strong>コア銘柄</strong>として積み上げることを推奨します。
+      </p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <p>本レポートはAIエージェント（dexter_py）による自律分析に基づいて生成されました。投資判断は必ずご自身の責任のもとで行ってください。</p>
+  <p style="margin-top:8px;">© 2026 · Powered by J-Quants API V2 · Data as of 2026-03-30</p>
+</footer>
+
+</body>
+</html>
