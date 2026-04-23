@@ -2,9 +2,9 @@ name: Market Summary Bot
 
 on:
   schedule:
-    # 🇯🇵 日本市場サマリー: 毎日 19:00 JST (= 10:00 UTC)
+    # 🇯🇵 日本市場サマリー: 毎日 18:10 JST (= 09:10 UTC)
     # ※ 月〜金のみ実行（市場が開いている日）
-    - cron: "0 10 * * 1-5"
+    - cron: "10 9 * * 1-5"
 
     # 🇺🇸 米国市場サマリー: 毎日 08:00 JST (= 23:00 UTC 前日)
     # ※ 火〜土（米国市場は月〜金、JST では翌日の早朝）
@@ -32,9 +32,9 @@ jobs:
   jp-summary:
     name: 🇯🇵 日本市場サマリー
     runs-on: ubuntu-latest
-    # スケジュール実行時は cron 0 10 のみ実行
+    # スケジュール実行時は cron 10 9 のみ実行
     if: >
-      (github.event_name == 'schedule' && github.event.schedule == '0 10 * * 1-5') ||
+      (github.event_name == 'schedule' && github.event.schedule == '10 9 * * 1-5') ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'jp')
 
     steps:
