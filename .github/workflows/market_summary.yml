@@ -46,14 +46,18 @@ jobs:
         with:
           python-version: "3.11"
           cache: "pip"
+          cache-dependency-path: "market_summary/requirements.txt"
 
       - name: 依存パッケージをインストール
+        working-directory: market_summary
         run: pip install -r requirements.txt
 
       - name: 🇯🇵 日本市場サマリーを実行
+        working-directory: market_summary
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          JQUANTS_API_KEY: ${{ secrets.JQUANTS_API_KEY }}
         run: |
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             python main.py --mode jp --dry-run
@@ -79,11 +83,14 @@ jobs:
         with:
           python-version: "3.11"
           cache: "pip"
+          cache-dependency-path: "market_summary/requirements.txt"
 
       - name: 依存パッケージをインストール
+        working-directory: market_summary
         run: pip install -r requirements.txt
 
       - name: 🇺🇸 米国市場サマリーを実行
+        working-directory: market_summary
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
