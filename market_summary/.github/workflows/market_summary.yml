@@ -1,0 +1,95 @@
+name: Market Summary Bot
+
+on:
+  schedule:
+    # 🇯🇵 日本市場サマリー: 毎日 19:00 JST (= 10:00 UTC)
+    # ※ 月〜金のみ実行（市場が開いている日）
+    - cron: "0 10 * * 1-5"
+
+    # 🇺🇸 米国市場サマリー: 毎日 08:00 JST (= 23:00 UTC 前日)
+    # ※ 火〜土（米国市場は月〜金、JST では翌日の早朝）
+    - cron: "0 23 * * 1-5"
+
+  # 手動実行も可能（テスト用）
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "実行モード (jp / us)"
+        required: true
+        default: "jp"
+        type: choice
+        options:
+          - jp
+          - us
+      dry_run:
+        description: "Dry run（Discord に投稿しない）"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  # ── 日本市場サマリー (10:00 UTC = 19:00 JST) ────────────────
+  jp-summary:
+    name: 🇯🇵 日本市場サマリー
+    runs-on: ubuntu-latest
+    # スケジュール実行時は cron 0 10 のみ実行
+    if: >
+      (github.event_name == 'schedule' && github.event.schedule == '0 10 * * 1-5') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'jp')
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Python 3.11 をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: 依存パッケージをインストール
+        run: pip install -r requirements.txt
+
+      - name: 🇯🇵 日本市場サマリーを実行
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            python main.py --mode jp --dry-run
+          else
+            python main.py --mode jp
+          fi
+
+  # ── 米国市場サマリー (23:00 UTC = 翌日 08:00 JST) ────────────
+  us-summary:
+    name: 🇺🇸 米国市場サマリー
+    runs-on: ubuntu-latest
+    # スケジュール実行時は cron 0 23 のみ実行
+    if: >
+      (github.event_name == 'schedule' && github.event.schedule == '0 23 * * 1-5') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'us')
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Python 3.11 をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: 依存パッケージをインストール
+        run: pip install -r requirements.txt
+
+      - name: 🇺🇸 米国市場サマリーを実行
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            python main.py --mode us --dry-run
+          else
+            python main.py --mode us
+          fi
